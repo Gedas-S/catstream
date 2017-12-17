@@ -11,6 +11,13 @@ class TestStandalone(unittest.TestCase):
     def test_cuda(self):
         self.assertGreater(torch.cuda.device_count(), 0)
 
+    def test_b64_image_encoding(self):
+        from base64 import standard_b64encode
+        from werkzeug.datastructures import FileStorage
+        rd = FileStorage(open('dot.png', 'rb')) # taken from wiki, public domain
+        bimg = standard_b64encode(rd.read())
+        self.assertEqual(bimg, b'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==')
+
 class TestNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
