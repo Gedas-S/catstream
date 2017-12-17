@@ -1,9 +1,11 @@
 """test module for my catstream"""
 # pylint: disable=missing-docstring
 import unittest
+import torch
+from PIL import Image
 import model
 import utils
-import torch
+
 
 class TestStandalone(unittest.TestCase):
     def test_cuda(self):
@@ -28,6 +30,13 @@ class TestNetwork(unittest.TestCase):
     # @unittest.skip('cannot see matplotlib images in VS anyway')
     def test_images(self):
         utils.show_images(utils.cifar10_testdata(), self.net)
+
+    def test_image(self):
+        # I just drew the image and hereby release it into the public domain :P
+        img = Image.open('test_image.jpg')
+        img = utils.preprocess_image(img)
+        cat = model.cat(img, self.net)
+        self.assertEqual(type(cat), int)
 
 if __name__ == '__main__':
     unittest.main()

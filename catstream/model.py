@@ -16,8 +16,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import torchvision.transforms as transforms
 import torchvision.datasets as datasets
+from utils import PREPROCESSING_TRANSFORM
 
 MODEL_LOCATION = 'model/catnet.model'
 
@@ -45,9 +45,8 @@ class CatNet(nn.Module):
 def train_network(net=None):
     """Train the CatNet network using CIFAR10 data"""
     # load the data
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize(*((0.5,) * 3,) * 2)])
-    trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainset = datasets.CIFAR10(root='./data', train=True, download=True,
+                                transform=PREPROCESSING_TRANSFORM)
     trainloader = DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
 
     # define network, loss function and optimizer
@@ -89,3 +88,11 @@ def get_network():
         print('No saved model found, training a new one.')
         net = train_network()
     return net
+
+def cat(image, net):
+    """return the predicted category of the image"""
+    image = Variable(image.unsqueeze(0).cuda())
+    outputs = net(image)
+    _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
+
+    return predicted[0]

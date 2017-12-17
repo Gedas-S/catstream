@@ -10,6 +10,13 @@ import torchvision.transforms as transforms
 
 CIFAR10_CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
+PREPROCESSING_TRANSFORM = transforms.Compose([
+    transforms.Scale(32),
+    transforms.CenterCrop(32),
+    transforms.ToTensor(),
+    transforms.Normalize(*((0.5,) * 3,) * 2)
+    ])
+
 def show_image(img):
     """show an image"""
     img = img / 2 + 0.5     # unnormalize
@@ -51,8 +58,11 @@ def print_accuracy(accuracy):
 
 def cifar10_testdata():
     """load the test part of cifar10 data and return it"""
-    transform = transforms.Compose([transforms.ToTensor(),
-                                    transforms.Normalize(*((0.5,) * 3,) * 2)])
-    testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    testset = datasets.CIFAR10(root='./data', train=False, download=True,
+                               transform=PREPROCESSING_TRANSFORM)
     testloader = DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
     return testloader
+
+def preprocess_image(img):
+    """preprocesses an image using the defined preprocessing transforms"""
+    return PREPROCESSING_TRANSFORM(img)
