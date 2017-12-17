@@ -12,8 +12,8 @@
 from base64 import standard_b64encode
 from flask import Flask, render_template, request
 from PIL import Image
-from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM
-from utils import cat, preprocess_image
+from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM, is_cat
+from utils import category, preprocess_image
 
 app = Flask(__name__) # pylint: disable=invalid-name
 
@@ -30,23 +30,26 @@ def receive_cat():
     image = request.files['image']
 
     if not image:
-        return "I lost the cat, did you send?"
+        return render_template('error.html', message="I lost the cat, did you send?")
     if image.filename.split('.')[-1] not in ALLOWED_EXTENSIONS:
-        return ("Sorry, I meant picture of cat, not actual cat. Does not look like a picture to me. I like %s and %s."
-                % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1]))
+        return render_template('error.html', message=(
+            "Sorry, I meant picture of cat, not actual cat. Does not look like a picture to me. I like %s and %s."
+            % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1])))
     try:
         img = Image.open(image)
-        is_cat = cat(preprocess_image(img, PREPROCESSING_TRANSFORM), cat_net)
+        category_num = category(preprocess_image(img, PREPROCESSING_TRANSFORM), cat_net)
     except OSError:
-        return "I does not understands your cat :( Is your cat corrupted?"
+        return render_template('error.html', message=
+                               "I does not understands your cat :( Is your cat corrupted?")
     except RuntimeError:
-        return "I cannot make out anything, could you send a bigger photo?"
+        return render_template('error.html', message=
+                               "I cannot make out anything, could you send a bigger photo?")
 
-    if CLASSES[is_cat] == 'cat':
-        response_string = "Cat!!!"
+    if is_cat(category_num):
+        response_string = "Cat!!! (%s)" % CLASSES[category_num]
     else:
         response_string = ("I don't think it's a cat, looks like a %s to me..."
-                           % CLASSES[is_cat])
+                           % CLASSES[category_num])
 
     image.seek(0)
     context = {

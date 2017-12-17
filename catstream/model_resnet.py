@@ -39,3 +39,7 @@ def train_network():
 def get_network():
     """returns the pretrained resnet152 network"""
     return resnet152(pretrained=True).eval().cuda()
+
+def is_cat(category):
+    """check if this is a cat category"""
+    return 280 <= category <= 293

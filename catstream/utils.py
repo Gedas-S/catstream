@@ -6,7 +6,7 @@ def preprocess_image(img, preprocessing_transform):
     """preprocesses an image using the defined preprocessing transforms"""
     return preprocessing_transform(img)
 
-def cat(image, net):
+def category(image, net):
     """return the predicted category of the image"""
     image = Variable(image.unsqueeze(0).cuda())
     outputs = net(image)
