@@ -20,11 +20,12 @@ def show_images(loader, net, classes=CIFAR10_CLASSES):
     """show the first batch of images from the loader"""
     dataiter = iter(loader)
     images, labels = dataiter.next()
+    labels = labels.cuda()
 
     show_image(torchvision.utils.make_grid(images))
     print('Truth: ', ' '.join('%5s' % classes[labels[j]] for j in range(4)))
 
-    outputs = net(Variable(images))
+    outputs = net(Variable(images.cuda()))
     _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
 
     print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
