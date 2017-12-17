@@ -40,7 +40,7 @@ def receive_cat():
         category_num = category(preprocess_image(img, PREPROCESSING_TRANSFORM), cat_net)
     except OSError:
         return render_template('error.html', message=
-                               "I does not understands your cat :( Is your cat corrupted?")
+                               "I does not understands your cat. Is your cat corrupted?")
     except RuntimeError:
         return render_template('error.html', message=
                                "I cannot make out anything, could you send a bigger photo?")
