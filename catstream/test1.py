@@ -4,8 +4,8 @@ import unittest
 import torch
 from PIL import Image
 import model
+import model_resnet
 import utils
-
 
 class TestStandalone(unittest.TestCase):
     def test_cuda(self):
@@ -18,7 +18,7 @@ class TestStandalone(unittest.TestCase):
         bimg = standard_b64encode(rdata.read())
         self.assertEqual(bimg, b'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==')
 
-class TestNetwork(unittest.TestCase):
+class TestBasicNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.net = model.get_network()
@@ -41,7 +41,19 @@ class TestNetwork(unittest.TestCase):
     def test_image(self):
         # I just drew the image and hereby release it into the public domain :P
         img = Image.open('test_image.jpg')
-        img = utils.preprocess_image(img)
+        img = utils.preprocess_image(img, model.PREPROCESSING_TRANSFORM)
+        cat = utils.cat(img, self.net)
+        self.assertEqual(type(cat), int)
+
+class TestResnetNetwork(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.net = model_resnet.get_network()
+
+    def test_resnet_image(self):
+        # I just drew the image and hereby release it into the public domain :P
+        img = Image.open('test_image.jpg')
+        img = utils.preprocess_image(img, model_resnet.PREPROCESSING_TRANSFORM)
         cat = utils.cat(img, self.net)
         self.assertEqual(type(cat), int)
 

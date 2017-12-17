@@ -19,6 +19,8 @@ import torch.optim as optim
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 
+CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
 MODEL_LOCATION = 'model/catnet.model'
 
 SIZE_TRANSFORM = transforms.Compose([

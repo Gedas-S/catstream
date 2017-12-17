@@ -2,8 +2,8 @@
 from base64 import standard_b64encode
 from flask import Flask, render_template, request
 from PIL import Image
-from model import get_network
-from utils import cat, preprocess_image, CIFAR10_CLASSES
+from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM
+from utils import cat, preprocess_image
 
 app = Flask(__name__) # pylint: disable=invalid-name
 
@@ -26,17 +26,17 @@ def receive_cat():
                 % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1]))
     try:
         img = Image.open(image)
-        is_cat = cat(preprocess_image(img), cat_net)
+        is_cat = cat(preprocess_image(img, PREPROCESSING_TRANSFORM), cat_net)
     except OSError:
         return "I does not understands your cat :( Is your cat corrupted?"
     except RuntimeError:
         return "I cannot make out anything, could you send a bigger photo?"
 
-    if CIFAR10_CLASSES[is_cat] == 'cat':
+    if CLASSES[is_cat] == 'cat':
         response_string = "Cat!!!"
     else:
         response_string = ("I don't think it's a cat, looks like a %s to me..."
-                           % CIFAR10_CLASSES[is_cat])
+                           % CLASSES[is_cat])
 
     image.seek(0)
     context = {

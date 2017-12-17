@@ -6,9 +6,7 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torchvision
 import torchvision.datasets as datasets
-from model import PREPROCESSING_TRANSFORM
-
-CIFAR10_CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+from model_resnet import PREPROCESSING_TRANSFORM, CLASSES
 
 def show_image(img):
     """show an image"""
@@ -16,7 +14,7 @@ def show_image(img):
     npimg = img.numpy()
     pyplot.imshow(numpy.transpose(npimg, (1, 2, 0)))
 
-def show_images(loader, net, classes=CIFAR10_CLASSES):
+def show_images(loader, net, classes=CLASSES):
     """show the first batch of images from the loader"""
     dataiter = iter(loader)
     images, labels = dataiter.next()
@@ -56,9 +54,9 @@ def cifar10_testdata():
     testloader = DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
     return testloader
 
-def preprocess_image(img):
+def preprocess_image(img, preprocessing_transform):
     """preprocesses an image using the defined preprocessing transforms"""
-    return PREPROCESSING_TRANSFORM(img)
+    return preprocessing_transform(img)
 
 def cat(image, net):
     """return the predicted category of the image"""
