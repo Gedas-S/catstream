@@ -1,1 +1,3 @@
 This is a random hack written on a lazy weekend to test out pytorch.
+
+The plan is to fire up a flask server, take images, and then tell if those are images of cats or not cats using a pytorch cnn.

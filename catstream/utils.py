@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 CIFAR10_CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
 PREPROCESSING_TRANSFORM = transforms.Compose([
-    transforms.Scale(32),
+    transforms.Resize(32),
     transforms.CenterCrop(32),
     transforms.ToTensor(),
     transforms.Normalize(*((0.5,) * 3,) * 2)

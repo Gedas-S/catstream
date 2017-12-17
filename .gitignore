@@ -1,6 +1,7 @@
 # project specific
 data/
 model/
+.vs/
 *.suo
 *.user
 

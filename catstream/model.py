@@ -32,7 +32,7 @@ class CatNet(nn.Module):
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
-    def forward(self, x):
+    def forward(self, x): # pylint: disable=arguments-differ
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
         x = x.view(-1, 16 * 5 * 5)
@@ -83,7 +83,7 @@ def get_network():
     path = os.path.abspath(MODEL_LOCATION)
     if MODEL_LOCATION and os.path.exists(path):
         print('Loading model from file at %s' % path)
-        net = torch.load(path)
+        net = torch.load(path).cuda()
     else:
         print('No saved model found, training a new one.')
         net = train_network()
