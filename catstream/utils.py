@@ -6,16 +6,9 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torchvision
 import torchvision.datasets as datasets
-import torchvision.transforms as transforms
+from model import PREPROCESSING_TRANSFORM
 
 CIFAR10_CLASSES = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-PREPROCESSING_TRANSFORM = transforms.Compose([
-    transforms.Resize(32),
-    transforms.CenterCrop(32),
-    transforms.ToTensor(),
-    transforms.Normalize(*((0.5,) * 3,) * 2)
-    ])
 
 def show_image(img):
     """show an image"""
@@ -66,3 +59,11 @@ def cifar10_testdata():
 def preprocess_image(img):
     """preprocesses an image using the defined preprocessing transforms"""
     return PREPROCESSING_TRANSFORM(img)
+
+def cat(image, net):
+    """return the predicted category of the image"""
+    image = Variable(image.unsqueeze(0).cuda())
+    outputs = net(image)
+    _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
+
+    return predicted[0]

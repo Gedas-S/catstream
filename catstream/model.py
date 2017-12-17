@@ -17,9 +17,20 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.datasets as datasets
-from utils import PREPROCESSING_TRANSFORM
+import torchvision.transforms as transforms
 
 MODEL_LOCATION = 'model/catnet.model'
+
+SIZE_TRANSFORM = transforms.Compose([
+    transforms.Resize(32),
+    transforms.CenterCrop(32)
+    ])
+
+PREPROCESSING_TRANSFORM = transforms.Compose([
+    SIZE_TRANSFORM,
+    transforms.ToTensor(),
+    transforms.Normalize(*((0.5,) * 3,) * 2)
+    ])
 
 class CatNet(nn.Module):
     """Your typical cnn for image recognition"""
@@ -88,11 +99,3 @@ def get_network():
         print('No saved model found, training a new one.')
         net = train_network()
     return net
-
-def cat(image, net):
-    """return the predicted category of the image"""
-    image = Variable(image.unsqueeze(0).cuda())
-    outputs = net(image)
-    _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
-
-    return predicted[0]

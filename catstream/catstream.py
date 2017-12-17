@@ -1,9 +1,9 @@
 """do the flask thing where we get cats"""
+from base64 import standard_b64encode
 from flask import Flask, render_template, request
 from PIL import Image
-from base64 import standard_b64encode
-from model import get_network, cat
-from utils import preprocess_image, CIFAR10_CLASSES
+from model import get_network
+from utils import cat, preprocess_image, CIFAR10_CLASSES
 
 app = Flask(__name__) # pylint: disable=invalid-name
 
