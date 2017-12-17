@@ -23,7 +23,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="catstream.py" />
-    <Compile Include="model.py" />
     <Compile Include="model_resnet.py">
       <SubType>Code</SubType>
     </Compile>

@@ -1,4 +1,14 @@
 """do the flask thing where we get cats"""
+# note, pytorch is currently not officially supported on windows, but a kind
+# person has made it work
+# https://github.com/peterjc123/pytorch-scripts
+# get it via
+# conda install -c peterjc123 pytorch cuda90
+# (assuming your GPU supports cuda90)
+#
+# also note, this is mostly following the pytorch tutorial at
+# http://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
+#
 from base64 import standard_b64encode
 from flask import Flask, render_template, request
 from PIL import Image
