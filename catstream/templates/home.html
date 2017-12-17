@@ -10,13 +10,18 @@
 
     <div>
         <h2>Can I has cat?</h2>
-        <form action="/cat" method=post enctype=multipart/form-data>
+        <form action="/cat" method=post enctype=multipart/form-data id="form">
             <p>
-                <input type=file name=image>
-                <input type=submit value=Upload>
+                <input type=file id="file" name=image>
             </p>
         </form>
     </div>
+
+    <script type="text/javascript">
+        document.getElementById("file").onchange = function () {
+            document.getElementById("form").submit();
+        };
+    </script>
 
 </body>
 </html>
