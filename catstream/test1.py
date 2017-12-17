@@ -25,7 +25,7 @@ class TestResnetNetwork(unittest.TestCase):
     def test_resnet_image(self):
         # I just drew the image and hereby release it into the public domain :P
         img = Image.open('test_image.jpg')
-        img = utils.preprocess_image(img, model_resnet.PREPROCESSING_TRANSFORM)
+        img = model_resnet.PREPROCESSING_TRANSFORM(img)
         cat = utils.category(img, self.net)
         self.assertEqual(type(cat), int)
 
