@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <div>
+    <div id="container">
         <h2>Can I has cat?</h2>
         <form action="/cat" method=post enctype=multipart/form-data id="form">
             <p>
@@ -20,6 +20,7 @@
     <script type="text/javascript">
         document.getElementById("file").onchange = function () {
             document.getElementById("form").submit();
+            document.getElementById("container").innerHTML = "<h2>Receiving cat!</h2>";
         };
     </script>
 
