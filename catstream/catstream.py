@@ -59,9 +59,8 @@ def receive_cat():
         }
     return render_template('cat.html', **context)
 
+print("Loading cnn, please stand by.")
+cat_net = get_network() # pylint: disable=invalid-name
 
 if __name__ == '__main__':
-    print("Loading cnn, please stand by.")
-    cat_net = get_network() # pylint: disable=invalid-name
-
     app.run(host='0.0.0.0')
