@@ -9,13 +9,17 @@
 # also note, this is mostly following the pytorch tutorial at
 # http://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
 #
+import os
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
+
+MODEL_LOCATION = 'model/catnet.model'
 
 class CatNet(nn.Module):
     """Your typical cnn for image recognition"""
@@ -65,4 +69,23 @@ def train_network(net=None):
             loss.backward()
             optimizer.step()
 
+    if MODEL_LOCATION:
+        path = os.path.abspath(MODEL_LOCATION)
+        print('Saving model to %s' % path)
+        if not os.path.exists(os.path.dirname(path)):
+            os.makedirs(os.path.dirname(path))
+        torch.save(net, path)
+
+    return net
+
+
+def get_network():
+    """Get a network - load from disk if available, train othwerise"""
+    path = os.path.abspath(MODEL_LOCATION)
+    if MODEL_LOCATION and os.path.exists(path):
+        print('Loading model from file at %s' % path)
+        net = torch.load(path)
+    else:
+        print('No saved model found, training a new one.')
+        net = train_network()
     return net

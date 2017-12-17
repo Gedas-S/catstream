@@ -12,14 +12,20 @@ class TestStandalone(unittest.TestCase):
 class TestNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.net = model.train_network()
+        cls.net = model.get_network()
 
-    def test_model(self):
+    @unittest.skip("don't want to run a 1.5 minute test every time")
+    def test_model_train(self):
+        self.net = model.train_network()
+        self.test_model_accuracy()
+
+    def test_model_accuracy(self):
         acc = utils.calculate_accuracy(utils.cifar10_testdata(), self.net)
         utils.print_accuracy(acc)
         self.assertGreater(acc, 0.5) # note the expected random guessing accuracy would be 0.1,
                                      # so we are quite demanding here
 
+    # @unittest.skip('cannot see matplotlib images in VS anyway')
     def test_images(self):
         utils.show_images(utils.cifar10_testdata(), self.net)
 
