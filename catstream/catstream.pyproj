@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0716b665-3d17-4c70-a88d-ed4210e0b17c</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>catstream.py</StartupFile>
+    <StartupFile>twisted_server.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,6 +27,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test1.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="twisted_server.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="utils.py">
