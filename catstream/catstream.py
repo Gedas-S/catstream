@@ -9,6 +9,7 @@
 # also note, this is mostly following the pytorch tutorial at
 # http://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
 #
+import warnings
 from base64 import standard_b64encode
 from io import BytesIO
 from flask import Flask, render_template, request
@@ -19,6 +20,10 @@ from model_resnet import (get_network, is_cat, predict_category,
 app = Flask(__name__) # pylint: disable=invalid-name
 
 ALLOWED_EXTENSIONS = 'jpg jpe jpeg png gif svg bmp'.split()
+MAX_SIZE_MB = 20
+
+warnings.simplefilter('error', Image.DecompressionBombWarning)
+app.config['MAX_CONTENT_LENGTH'] = MAX_SIZE_MB * 1024 * 1024
 
 @app.route('/')
 def ask_for_cat():
@@ -45,12 +50,15 @@ def receive_cat():
     except OSError:
         return render_template('error.html', message=
                                "I does not understands your cat. Is your cat corrupted?")
+    except Image.DecompressionBombWarning:
+        return render_template('error.html', message=
+                               "Your cat is very big, perhaps you have a smaller one?")
     # try to run the image through the neural net
     try:
         category_num = predict_category(PREPROCESSING_TRANSFORM(img), cat_net)
     except RuntimeError: # this usually happens when the convolution layers run out of bounds
         return render_template('error.html', message=
-                               "I cannot make out anything, maybe the photo is very small?")
+                               "I cannot make out anything, maybe the cat is very small?")
 
     # create message depending on whether we think it's a cat
     if is_cat(category_num):
@@ -70,6 +78,12 @@ def receive_cat():
         'image_data': str(standard_b64encode(byte_stream.read()))[2:-1]
         }
     return render_template('cat.html', **context)
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return render_template('error.html', message=
+                           "That is a really big cat. I'm only allowed to handle cats up to %i MB."
+                           % MAX_SIZE_MB)
 
 print("Loading CNN, please stand by.")
 cat_net = get_network() # pylint: disable=invalid-name
