@@ -41,8 +41,7 @@ def receive_cat():
 
     # try to open the image
     try:
-        img = Image.open(image)
-        img = SIZE_TRANSFORM(img)
+        img = SIZE_TRANSFORM(Image.open(image).convert(mode='RGB'))
     except OSError:
         return render_template('error.html', message=
                                "I does not understands your cat. Is your cat corrupted?")
@@ -51,7 +50,7 @@ def receive_cat():
         category_num = predict_category(PREPROCESSING_TRANSFORM(img), cat_net)
     except RuntimeError: # this usually happens when the convolution layers run out of bounds
         return render_template('error.html', message=
-                               "I cannot make out anything, could you send a bigger photo?")
+                               "I cannot make out anything, maybe the photo is very small?")
 
     # create message depending on whether we think it's a cat
     if is_cat(category_num):
