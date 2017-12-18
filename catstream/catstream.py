@@ -60,11 +60,13 @@ def receive_cat():
                                "I cannot figure out what went wrong, but you can try another cat!")
 
     # create message depending on whether we think it's a cat
+    category_name = CLASSES[category_num]
+    if category_name.find(',') >= 0:
+        category_name = ' or'.join(category_name.rsplit(',', 1))
     if is_cat(category_num):
-        response_string = "Cat!!! (%s)" % CLASSES[category_num]
+        response_string = "Cat!!! (%s)" % category_name
     else:
-        response_string = ("I don't think it's a cat, looks like a %s to me..."
-                           % CLASSES[category_num])
+        response_string = "I don't think it's a cat, looks like %s to me..." % category_name
 
     # reencode the resized image before sending back
     byte_stream = BytesIO()
