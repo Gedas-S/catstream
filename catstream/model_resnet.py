@@ -12,11 +12,11 @@ CLASSES_LINK = 'https://gist.githubusercontent.com/yrevar/942d3a0ac09ec9e5eb3a/r
 CLASSES_LOCATION = 'data/imagenet.classes.txt'
 
 # download class list if none found locally
-if not os.path.exists(os.path.abspath(CLASSES_LOCATION)):
+if not os.path.exists(CLASSES_LOCATION):
     print('No cached image.net classes found, downloading.')
     CLASSES = urllib.request.urlopen(CLASSES_LINK).read()
-    if not os.path.exists(os.path.dirname(os.path.abspath(CLASSES_LOCATION))):
-        os.makedirs(os.path.dirname(os.path.abspath(CLASSES_LOCATION)))
+    if not os.path.exists(os.path.dirname(CLASSES_LOCATION)):
+        os.makedirs(os.path.dirname(CLASSES_LOCATION))
     with open(CLASSES_LOCATION, 'wb') as file:
         file.write(CLASSES)
     print('Saving image.net classes to %s' % os.path.abspath(CLASSES_LOCATION))

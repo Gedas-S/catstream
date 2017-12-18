@@ -29,7 +29,7 @@ class TestStandalone(unittest.TestCase):
             self.assertEqual(bimg, DOT64)
 
     def test_class_list(self):
-        self.assertTrue(os.path.exists(os.path.abspath(model.CLASSES_LOCATION)))
+        self.assertTrue(os.path.exists(model.CLASSES_LOCATION))
         self.assertEqual(model.CLASSES[282], 'tiger cat')
 
 
