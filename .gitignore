@@ -4,6 +4,7 @@ model/
 .vs/
 *.suo
 *.user
+*.pem
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
