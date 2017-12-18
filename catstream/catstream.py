@@ -36,7 +36,7 @@ def receive_cat():
         return render_template('error.html', message=(
             "Sorry, I meant picture of cat, not actual cat. Does not look like a picture to me. I like %s and %s."
             % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1])))
-    
+
     # try to open the image
     try:
         img = Image.open(image)

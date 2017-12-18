@@ -51,5 +51,4 @@ def predict_category(image, net):
     image = Variable(image.unsqueeze(0).cuda())
     outputs = net(image)
     _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
-
     return predicted[0]
