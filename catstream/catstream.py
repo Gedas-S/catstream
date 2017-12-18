@@ -10,9 +10,11 @@
 # http://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
 #
 from base64 import standard_b64encode
+from io import BytesIO
 from flask import Flask, render_template, request
 from PIL import Image
-from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM, is_cat, predict_category
+from model_resnet import (get_network, is_cat, predict_category,
+                          CLASSES, PREPROCESSING_TRANSFORM, SIZE_TRANSFORM)
 
 app = Flask(__name__) # pylint: disable=invalid-name
 
@@ -40,6 +42,7 @@ def receive_cat():
     # try to open the image
     try:
         img = Image.open(image)
+        img = SIZE_TRANSFORM(img)
     except OSError:
         return render_template('error.html', message=
                                "I does not understands your cat. Is your cat corrupted?")
@@ -57,11 +60,15 @@ def receive_cat():
         response_string = ("I don't think it's a cat, looks like a %s to me..."
                            % CLASSES[category_num])
 
-    image.seek(0) # reset the cursor on the FileStorage object
+    # reencode the resized image before sending back
+    byte_stream = BytesIO()
+    img.save(byte_stream, 'png', optimize=True)
+    byte_stream.seek(0)
+
     context = {
         'response_string': response_string,
         'image_type': image.headers['Content-Type'],
-        'image_data': str(standard_b64encode(image.read()))[2:-1]
+        'image_data': str(standard_b64encode(byte_stream.read()))[2:-1]
         }
     return render_template('cat.html', **context)
 

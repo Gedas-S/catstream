@@ -1,13 +1,14 @@
 """test module for my catstream"""
 # pylint: disable=missing-docstring
 import unittest
+from io import BytesIO
 import torch
 from PIL import Image
 from werkzeug.datastructures import FileStorage
 import model_resnet as model
 import catstream
 
-DOT64 = b'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+DOT64 = b'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAJklEQVR42nXIsQkAIADAsNb/f66LIoJmjBVobKXBiWXw8MnymnICEGsMAo+vrWIAAAAASUVORK5CYII='
 
 
 class TestStandalone(unittest.TestCase):
@@ -19,7 +20,11 @@ class TestStandalone(unittest.TestCase):
         from base64 import standard_b64encode
         with open('test_files/dot.png', 'rb') as file: # taken from wiki, public domain
             rdata = FileStorage(file)
-            bimg = standard_b64encode(rdata.read())
+            img = Image.open(rdata)
+            stream = BytesIO()
+            img.save(stream, 'png', optimize=True)
+            stream.seek(0)
+            bimg = standard_b64encode(stream.read())
             self.assertEqual(bimg, DOT64)
 
 
