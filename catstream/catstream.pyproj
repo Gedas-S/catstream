@@ -32,9 +32,6 @@
     <Compile Include="twisted_server.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="utils.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|Anaconda 5.0.1" />

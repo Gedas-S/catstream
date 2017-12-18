@@ -2,6 +2,8 @@
 import urllib
 import ast
 import os
+import torch
+from torch.autograd import Variable
 import torchvision.transforms as transforms
 from torchvision.models import resnet152
 
@@ -40,6 +42,14 @@ def get_network():
     """returns the pretrained resnet152 network"""
     return resnet152(pretrained=True).eval().cuda()
 
-def is_cat(category):
+def is_cat(category_num):
     """check if this is a cat category"""
-    return 280 <= category <= 293
+    return 280 <= category_num <= 293
+
+def predict_category(image, net):
+    """return the predicted category of the image"""
+    image = Variable(image.unsqueeze(0).cuda())
+    outputs = net(image)
+    _, predicted = torch.max(outputs.data, 1) # pylint: disable=no-member
+
+    return predicted[0]

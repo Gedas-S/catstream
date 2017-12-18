@@ -12,8 +12,7 @@
 from base64 import standard_b64encode
 from flask import Flask, render_template, request
 from PIL import Image
-from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM, is_cat
-from utils import category
+from model_resnet import get_network, CLASSES, PREPROCESSING_TRANSFORM, is_cat, predict_category
 
 app = Flask(__name__) # pylint: disable=invalid-name
 
@@ -37,7 +36,7 @@ def receive_cat():
             % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1])))
     try:
         img = Image.open(image)
-        category_num = category(PREPROCESSING_TRANSFORM(img), cat_net)
+        category_num = predict_category(PREPROCESSING_TRANSFORM(img), cat_net)
     except OSError:
         return render_template('error.html', message=
                                "I does not understands your cat. Is your cat corrupted?")

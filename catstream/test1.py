@@ -3,8 +3,7 @@
 import unittest
 import torch
 from PIL import Image
-import model_resnet
-import utils
+import model_resnet as model
 
 class TestStandalone(unittest.TestCase):
     def test_cuda(self):
@@ -20,13 +19,13 @@ class TestStandalone(unittest.TestCase):
 class TestResnetNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.net = model_resnet.get_network()
+        cls.net = model.get_network()
 
     def test_resnet_image(self):
         # I just drew the image and hereby release it into the public domain :P
         img = Image.open('test_files/test_image.jpg')
-        img = model_resnet.PREPROCESSING_TRANSFORM(img)
-        cat = utils.category(img, self.net)
+        img = model.PREPROCESSING_TRANSFORM(img)
+        cat = model.predict_category(img, self.net)
         self.assertEqual(type(cat), int)
 
 if __name__ == '__main__':
