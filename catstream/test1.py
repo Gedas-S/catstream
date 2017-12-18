@@ -37,7 +37,7 @@ class TestResnetNetwork(unittest.TestCase):
     def test_resnet_image(self):
         # I just drew the image and hereby release it into the public domain :P
         img = Image.open('test_files/test_image.jpg')
-        img = model.PREPROCESSING_TRANSFORM(img)
+        img = model.PREPROCESSING_TRANSFORM(model.SIZE_TRANSFORM(img))
         cat = model.predict_category(img, self.net)
         self.assertEqual(type(cat), int)
 
@@ -59,10 +59,12 @@ class TestFlask(unittest.TestCase):
                                      content_type='multipart/form-data',
                                      data={'image': file_data},
                                      follow_redirects=True)
-            self.assertGreater(str(response.data).find(message), 0)
-
-    def test_small_image(self):
-        self.image_test('dot.png', 'could you send a bigger photo?')
+            response_string = str(response.data)
+            try:
+                self.assertGreater(response_string.find(message), 0)
+            except AssertionError:
+                print(response_string)
+                raise
 
     def test_blank_image(self):
         self.image_test('bad.jpg', 'Is your cat corrupted')

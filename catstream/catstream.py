@@ -6,9 +6,6 @@
 # conda install -c peterjc123 pytorch cuda90
 # (assuming your GPU supports cuda90)
 #
-# also note, this is mostly following the pytorch tutorial at
-# http://pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
-#
 import warnings
 from base64 import standard_b64encode
 from io import BytesIO
@@ -41,8 +38,8 @@ def receive_cat():
     # check if received file is an image
     if image.filename.split('.')[-1] not in ALLOWED_EXTENSIONS:
         return render_template('error.html', message=(
-            "Sorry, I meant picture of cat, not actual cat. Does not look like a picture to me. I like %s and %s."
-            % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1])))
+            "Sorry, I meant picture of cat, not actual cat. Does not look like a picture to me. "
+            + "I like %s and %s." % (', '.join(ALLOWED_EXTENSIONS[:-1]), ALLOWED_EXTENSIONS[-1])))
 
     # try to open the image
     try:
@@ -56,9 +53,11 @@ def receive_cat():
     # try to run the image through the neural net
     try:
         category_num = predict_category(PREPROCESSING_TRANSFORM(img), cat_net)
-    except RuntimeError: # this usually happens when the convolution layers run out of bounds
+    # I thought this was due to running out of bounds, but with resize, it should not
+    # I cannot reproduce this after fixing the alpha channel issue, but leaving it in just in case
+    except RuntimeError:
         return render_template('error.html', message=
-                               "I cannot make out anything, maybe the cat is very small?")
+                               "I cannot figure out what went wrong, but you can try another cat!")
 
     # create message depending on whether we think it's a cat
     if is_cat(category_num):
@@ -80,7 +79,8 @@ def receive_cat():
     return render_template('cat.html', **context)
 
 @app.errorhandler(413)
-def request_entity_too_large(error):
+def request_entity_too_large(error): # pylint: disable=unused-argument
+    """return the size limit when received file is too large"""
     return render_template('error.html', message=
                            "That is a really big cat. I'm only allowed to handle cats up to %i MB."
                            % MAX_SIZE_MB)
