@@ -1,6 +1,7 @@
 """test module for my catstream"""
 # pylint: disable=missing-docstring
 import unittest
+import os
 from io import BytesIO
 import torch
 from PIL import Image
@@ -26,6 +27,10 @@ class TestStandalone(unittest.TestCase):
             stream.seek(0)
             bimg = standard_b64encode(stream.read())
             self.assertEqual(bimg, DOT64)
+
+    def test_class_list(self):
+        self.assertTrue(os.path.exists(os.path.abspath(model.CLASSES_LOCATION)))
+        self.assertEqual(model.CLASSES[282], 'tiger cat')
 
 
 class TestResnetNetwork(unittest.TestCase):
